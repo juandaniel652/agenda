@@ -6,7 +6,7 @@ app = FastAPI()
 # Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://frontend-host.com"],  # dominio del frontend
+    allow_origins=["https://s-link-version1-0.netlify.app"],  # dominio del frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
