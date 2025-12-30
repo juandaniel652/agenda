@@ -5,5 +5,10 @@ class Cliente(Base):
     __tablename__ = "clientes"
 
     id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String(100), nullable=False)
-    email = Column(String(255), unique=True, index=True, nullable=False)
+    numero_cliente = Column(String, nullable=False)
+    nombre = Column(String, nullable=False)
+    apellido = Column(String, nullable=False)
+    telefono = Column(String, nullable=False)
+    domicilio = Column(String, nullable=False)
+    numero_domicilio = Column(String, nullable=False)
+    email = Column(String, nullable=False, unique=True)
