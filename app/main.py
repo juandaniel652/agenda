@@ -1,27 +1,50 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes.cliente import router as clientes_router
-from app.routes.health import router as health_router
-from app.models import cliente  # noqa
-from app.db import Base, engine
 
-Base.metadata.create_all(bind=engine)
+from app.api.v1.auth import router as auth_router
+from app.api.v1.cliente import router as cliente_router
+from app.api.v1.health import router as health_router
 
-app = FastAPI(title="Agenda Backend", version="0.1.0")
+app = FastAPI(
+    title="Backend Unificado",
+    description="Auth + App backend",
+    version="1.0.0",
+)
+
+# =========================
+# CORS CONFIGURACIÓN
+# =========================
+# Se conserva la config del login (producción)
+origins = [
+    "https://loginagenda.netlify.app",
+    "https://s-link-version1-0.netlify.app",
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://localhost:5500",
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://s-link-version1-0.netlify.app",
-        "http://localhost:3000",
-        "http://localhost:5173"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(clientes_router)
-app.include_router(health_router)
+# =========================
+# Routers API v1
+# =========================
+app.include_router(auth_router, prefix="/api/v1")
+app.include_router(cliente_router, prefix="/api/v1")
+app.include_router(health_router, prefix="/api/v1")
 
+# =========================
+# Root
+# =========================
 @app.get("/")
-def read_root():
-    return {"message": "Backend funcionando con CORS habilitado"}
+def root():
+    return {
+        "service": "backend-unificado",
+        "status": "running",
+        "version": app.version,
+    }
