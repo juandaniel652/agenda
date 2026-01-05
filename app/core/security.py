@@ -1,29 +1,20 @@
 from datetime import datetime, timedelta
 from jose import jwt, JWTError
 from passlib.context import CryptContext
+import os
 
-from app.core.config import settings
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-# =========================
-# CONFIG
-# =========================
-
-JWT_SECRET_KEY = settings.JWT_SECRET_KEY
-ALGORITHM = settings.JWT_ALGORITHM
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
-
-# =========================
-# PASSWORD CONTEXT
-# =========================
+if not JWT_SECRET_KEY:
+    raise RuntimeError("JWT_SECRET_KEY no configurada")
 
 pwd_context = CryptContext(
     schemes=["argon2"],
     deprecated="auto"
 )
 
-# =========================
-# PASSWORD HELPERS
-# =========================
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
@@ -32,14 +23,8 @@ def hash_password(password: str) -> str:
 def verify_password(password: str, hashed_password: str) -> bool:
     return pwd_context.verify(password, hashed_password)
 
-# =========================
-# JWT
-# =========================
 
-def create_access_token(
-    data: dict,
-    expires_delta: timedelta | None = None
-) -> str:
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     to_encode = data.copy()
 
     expire = datetime.utcnow() + (
@@ -57,11 +42,10 @@ def create_access_token(
 
 def decode_token(token: str) -> dict:
     try:
-        payload = jwt.decode(
+        return jwt.decode(
             token,
             JWT_SECRET_KEY,
             algorithms=[ALGORITHM]
         )
-        return payload
     except JWTError:
         raise RuntimeError("Token inválido o expirado")
