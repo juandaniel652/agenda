@@ -48,6 +48,7 @@ def me(current_user: User = Depends(get_current_user)):
     return {
         "id": current_user.id,
         "email": current_user.email,
-        "nombre": current_user.nombre,
-        "rol": current_user.rol
+        "role": current_user.role,
+        "is_active": current_user.is_active
     }
+
