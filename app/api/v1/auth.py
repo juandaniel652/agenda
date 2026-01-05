@@ -6,6 +6,9 @@ from app.core.security import create_access_token, verify_password
 from app.api.deps import get_db
 from app.repositories.user_repository import UserRepository
 
+from app.core.security import get_current_user
+from app.models.user import User
+
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 @router.get("/ping")
@@ -36,4 +39,14 @@ def login(data: LoginSchema, db: Session = Depends(get_db)):
     return {
         "access_token": access_token,
         "token_type": "bearer"
+    }
+    
+
+@router.get("/me")
+def me(current_user: User = Depends(get_current_user)):
+    return {
+        "id": current_user.id,
+        "email": current_user.email,
+        "nombre": current_user.nombre,
+        "rol": current_user.rol
     }
