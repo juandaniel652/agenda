@@ -1,12 +1,13 @@
 from pydantic import BaseModel, EmailStr
+from uuid import UUID
 
 class ClienteBase(BaseModel):
-    numero_cliente: str
+    numero_cliente: int
     nombre: str
     apellido: str
     telefono: str
     domicilio: str
-    numero_domicilio: str
+    numero_domicilio: int
     email: EmailStr
 
 
@@ -15,7 +16,7 @@ class ClienteCreate(ClienteBase):
 
 
 class ClienteOut(ClienteBase):
-    id: int
+    id: UUID
 
     class Config:
         from_attributes = True
