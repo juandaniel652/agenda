@@ -32,9 +32,10 @@ app.add_middleware(
         "https://s-link-version1-0.netlify.app",
     ],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 
 
 # =========================
