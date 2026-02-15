@@ -1,23 +1,29 @@
+# Core framework
 fastapi==0.115.0
 uvicorn==0.32.0
-sqlalchemy==2.0.36
-psycopg2-binary==2.9.10
-pydantic==2.9.2
-email-validator==2.2.0
-python-dotenv==1.0.1
-
-fastapi
-uvicorn
 gunicorn==21.2.0
 
-sqlalchemy
-psycopg2-binary
+# Database & ORM
+sqlalchemy==2.0.36
+psycopg2-binary==2.9.10
 
-python-dotenv
+# Validation & serialization
+pydantic==2.9.2
+pydantic-core==2.23.4 --only-binary=:all:
+email-validator==2.2.0
 pydantic[email]
 pydantic-settings
 
+# Security & authentication
 python-jose[cryptography]
-
 passlib[argon2]
 argon2-cffi
+
+# Utilities
+python-dotenv==1.0.1
+requests==2.32.3
+
+# Build tools (para asegurar wheels disponibles)
+pip>=26.0.1
+setuptools>=75.0.0
+wheel>=0.44.0
