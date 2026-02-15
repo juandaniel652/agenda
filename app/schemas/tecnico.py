@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
 from uuid import UUID
+from typing import List, Optional
+from app.schemas.horario import HorarioBase
 
 class TecnicoCreate(BaseModel):
     email: Optional[EmailStr]
@@ -10,6 +11,9 @@ class TecnicoCreate(BaseModel):
     duracion_turno_min: int
     imagen_url: Optional[str]
 
+from typing import List, Optional
+from app.schemas.horario import HorarioBase
+
 class TecnicoUpdate(BaseModel):
     email: Optional[EmailStr]
     nombre: Optional[str]
@@ -18,6 +22,8 @@ class TecnicoUpdate(BaseModel):
     duracion_turno_min: Optional[int]
     imagen_url: Optional[str]
     activo: Optional[bool]
+    horarios: Optional[List[HorarioBase]]   # 👈 ACÁ
+
 
 class TecnicoOut(BaseModel):
     id: UUID
