@@ -27,6 +27,8 @@ def actualizar_tecnico(
     data: TecnicoUpdate,
     user=Depends(require_roles(["admin"]))
 ):
+    print("USANDO TecnicoUpdate")
+    print(data)
     return TecnicoService.actualizar(id, data)
 
 @router.delete("/{id}")
