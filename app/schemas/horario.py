@@ -1,7 +1,7 @@
 from pydantic import BaseModel
-from typing import Optional
+from datetime import time
 
 class HorarioBase(BaseModel):
-    dia_semana: int  # 0-6
-    hora_inicio: str  # "09:00"
-    hora_fin: str     # "13:00"
+    dia_semana: int
+    hora_inicio: time
+    hora_fin: time
