@@ -13,6 +13,7 @@ class TecnicoCreate(BaseModel):
 
 
 class TecnicoUpdate(BaseModel):
+    id: UUID
     email: Optional[EmailStr]
     nombre: Optional[str]
     apellido: Optional[str]
