@@ -11,8 +11,6 @@ class TecnicoCreate(BaseModel):
     duracion_turno_min: int
     imagen_url: Optional[str]
 
-from typing import List, Optional
-from app.schemas.horario import HorarioBase
 
 class TecnicoUpdate(BaseModel):
     email: Optional[EmailStr]
