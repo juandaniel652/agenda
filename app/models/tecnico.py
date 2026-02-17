@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Integer, Boolean, Text, DateTime
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from app.db.base import Base
 import uuid
 from datetime import datetime
@@ -16,3 +17,8 @@ class Tecnico(Base):
     imagen_url = Column(Text, nullable=True)
     activo = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    horarios = relationship(
+        "TecnicoDisponibilidad",
+        backref="tecnico",
+        cascade="all, delete-orphan"
+    )

@@ -4,6 +4,7 @@ from app.models.tecnico_disponibilidad import TecnicoDisponibilidad
 from app.schemas.tecnico import TecnicoCreate, TecnicoUpdate
 from uuid import UUID
 from sqlalchemy import text
+from sqlalchemy.orm import joinedload
 
 
 MAP_DIAS = {
@@ -37,7 +38,10 @@ class TecnicoService:
     def listar():
         db = SessionLocal()
         try:
-            return db.query(Tecnico).filter(Tecnico.activo == True).all()
+            return db.query(Tecnico)\
+                     .options(joinedload(Tecnico.horarios))\
+                     .filter(Tecnico.activo == True)\
+                     .all()
         finally:
             db.close()
 
