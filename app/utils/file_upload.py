@@ -3,6 +3,8 @@ from uuid import uuid4
 from fastapi import UploadFile
 
 BASE_URL = os.getenv("BASE_URL", "https://agenda-1-zomu.onrender.com")
+if not BASE_URL:
+    raise ValueError("BASE_URL no configurado")
 
 UPLOAD_DIR = "uploads"
 
