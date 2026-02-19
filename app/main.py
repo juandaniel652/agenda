@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+import os
 
 from app.api.v1.auth import router as auth_router
 from app.api.v1.cliente import router as cliente_router
@@ -12,6 +13,9 @@ app = FastAPI(
     description="Auth + App backend",
     version="1.0.0",
 )
+
+# CREAR carpeta uploads automáticamente
+os.makedirs("uploads", exist_ok=True)
 
 # =========================
 # CORS
@@ -34,8 +38,9 @@ app.include_router(auth_router, prefix="/api/v1")
 app.include_router(cliente_router, prefix="/api/v1")
 app.include_router(health_router, prefix="/api/v1")
 app.include_router(tecnico_router, prefix="/api/v1")
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
+# SERVIR archivos
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # =========================
 # Root
