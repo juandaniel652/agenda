@@ -7,29 +7,26 @@ from sqlalchemy import text
 from sqlalchemy.orm import joinedload
 
 
-MAP_DIAS = {
-    "lunes": 1,
-    "martes": 2,
-    "miercoles": 3,
-    "jueves": 4,
-    "viernes": 5,
-    "sabado": 6, 
-}
-
-
 class TecnicoService:
-
+    
     @staticmethod
-    def crear_tecnico(data: TecnicoCreate):
+    def crear_tecnico(data: dict):
+
         db = SessionLocal()
+
         try:
-            tecnico = Tecnico(**data.dict())
+
+            tecnico = Tecnico(**data)
+
             db.add(tecnico)
             db.commit()
             db.refresh(tecnico)
+
             return tecnico
+
         finally:
             db.close()
+
 
     @staticmethod
     def listar():
