@@ -11,19 +11,19 @@ class TecnicoService:
     
     @staticmethod
     def crear_tecnico(data: dict):
-
+    
         db = SessionLocal()
-
+    
         try:
-
+        
             tecnico = Tecnico(**data)
-
+    
             db.add(tecnico)
             db.commit()
             db.refresh(tecnico)
-
+    
             return tecnico
-
+    
         finally:
             db.close()
 

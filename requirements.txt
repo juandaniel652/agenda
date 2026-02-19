@@ -27,4 +27,4 @@ pip>=26.0.1
 setuptools>=75.0.0
 wheel>=0.44.0
 
-python-multipart
+python-multipart==0.0.22
