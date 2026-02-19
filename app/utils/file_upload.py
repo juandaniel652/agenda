@@ -4,19 +4,19 @@ from fastapi import UploadFile
 
 UPLOAD_DIR = "uploads"
 
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+def save_image(file: UploadFile) -> str:
 
-async def guardar_imagen(imagen: UploadFile | None):
-
-    if not imagen:
+    if not file:
         return None
 
-    extension = imagen.filename.split(".")[-1]
-    filename = f"{uuid.uuid4()}.{extension}"
+    ext = file.filename.split(".")[-1]
+    filename = f"{uuid.uuid4()}.{ext}"
 
     path = os.path.join(UPLOAD_DIR, filename)
 
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+
     with open(path, "wb") as buffer:
-        buffer.write(await imagen.read())
+        buffer.write(file.file.read())
 
     return f"/uploads/{filename}"
