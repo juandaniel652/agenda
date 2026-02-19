@@ -25,7 +25,7 @@ def crear_tecnico(
     imagen_url = None
 
     if imagen:
-        iimagen_url = upload_image(imagen)
+        imagen_url = upload_image(imagen)
 
     return TecnicoService.crear_tecnico({
         "nombre": nombre,
