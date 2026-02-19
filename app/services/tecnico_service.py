@@ -8,15 +8,12 @@ from sqlalchemy.orm import joinedload
 
 
 MAP_DIAS = {
-    "lunes": 0,
-    "martes": 1,
-    "miercoles": 2,
-    "miércoles": 2,
-    "jueves": 3,
-    "viernes": 4,
-    "sabado": 5,
-    "sábado": 5,
-    "domingo": 6
+    "lunes": 1,
+    "martes": 2,
+    "miercoles": 3,
+    "jueves": 4,
+    "viernes": 5,
+    "sabado": 6, 
 }
 
 
