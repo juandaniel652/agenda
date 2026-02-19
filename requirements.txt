@@ -28,3 +28,4 @@ setuptools>=75.0.0
 wheel>=0.44.0
 
 python-multipart==0.0.22
+cloudinary

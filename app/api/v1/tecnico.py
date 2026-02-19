@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, UploadFile, File, Form
 from app.api.deps import require_roles
 from app.schemas.tecnico import TecnicoUpdate
 from app.services.tecnico_service import TecnicoService
-from app.utils.file_upload import save_image
+from app.utils.cloudinary_upload import upload_image
 from typing import Optional
 import json
 
@@ -25,7 +25,7 @@ def crear_tecnico(
     imagen_url = None
 
     if imagen:
-        imagen_url = save_image(imagen)
+        iimagen_url = upload_image(imagen)
 
     return TecnicoService.crear_tecnico({
         "nombre": nombre,
@@ -58,7 +58,8 @@ def actualizar_tecnico(
     imagen_url = None
 
     if imagen:
-        imagen_url = save_image(imagen)
+        imagen_url = upload_image(imagen)
+
 
     horarios_list = None
 
