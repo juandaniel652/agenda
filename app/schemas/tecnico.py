@@ -13,14 +13,16 @@ class TecnicoCreate(BaseModel):
 
 
 class TecnicoUpdate(BaseModel):
-    email: Optional[EmailStr]
-    nombre: Optional[str]
-    apellido: Optional[str]
-    telefono: Optional[str]
-    duracion_turno_min: Optional[int]
-    imagen_url: Optional[str]
-    activo: Optional[bool]
-    horarios: Optional[List[HorarioBase]]   # 👈 ACÁ
+
+    email: Optional[EmailStr] = None
+    nombre: Optional[str] = None
+    apellido: Optional[str] = None
+    telefono: Optional[str] = None
+    duracion_turno_min: Optional[int] = None
+    imagen_url: Optional[str] = None
+    activo: Optional[bool] = None
+    horarios: Optional[List[HorarioBase]] = None
+
 
 
 class TecnicoOut(BaseModel):
