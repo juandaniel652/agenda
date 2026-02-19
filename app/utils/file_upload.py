@@ -1,22 +1,23 @@
 import os
-import uuid
+from uuid import uuid4
 from fastapi import UploadFile
+
+BASE_URL = os.getenv("BASE_URL", "https://agenda-1-zomu.onrender.com")
 
 UPLOAD_DIR = "uploads"
 
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+
 def save_image(file: UploadFile) -> str:
 
-    if not file:
-        return None
-
     ext = file.filename.split(".")[-1]
-    filename = f"{uuid.uuid4()}.{ext}"
 
-    path = os.path.join(UPLOAD_DIR, filename)
+    filename = f"{uuid4()}.{ext}"
 
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    filepath = os.path.join(UPLOAD_DIR, filename)
 
-    with open(path, "wb") as buffer:
+    with open(filepath, "wb") as buffer:
         buffer.write(file.file.read())
 
-    return f"/uploads/{filename}"
+    return f"{BASE_URL}/uploads/{filename}"
