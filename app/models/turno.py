@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Date, Time, Enum, ForeignKey, Integer, TIMESTAMP, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+from sqlalchemy import String
 import uuid
 
 from app.db.base import Base
@@ -11,7 +12,7 @@ class Turno(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
-    numero_ticket = Column(Integer, nullable=False)
+    numero_ticket = Column(String, nullable=False, index=True)
 
     cliente_id = Column(
         UUID(as_uuid=True),

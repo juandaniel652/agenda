@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from uuid import UUID
 from datetime import date, time
-
+from enum import Enum
 
 class TurnoBase(BaseModel):
     numero_ticket: str
@@ -23,3 +23,15 @@ class TurnoResponse(TurnoBase):
 
     class Config:
         from_attributes = True
+
+
+class TipoTurnoEnum(str, Enum):
+    regular = "regular"
+    urgente = "urgente"
+
+
+class EstadoTurnoEnum(str, Enum):
+    pendiente = "pendiente"
+    confirmado = "confirmado"
+    cancelado = "cancelado"
+    completado = "completado"
