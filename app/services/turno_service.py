@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
-
+from sqlalchemy.orm import Session, joinedload
 from app.models.turno import Turno
 from app.schemas.turno import TurnoCreate
 
@@ -9,7 +9,15 @@ class TurnoService:
 
     @staticmethod
     def obtener_todos(db: Session):
-        return db.query(Turno).all()
+    
+        turnos = db.query(Turno).options(
+        
+            joinedload(Turno.cliente),
+            joinedload(Turno.tecnico)
+    
+        ).all()
+    
+        return turnos
 
 
     @staticmethod

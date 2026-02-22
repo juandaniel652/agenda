@@ -32,8 +32,39 @@ class TurnoCreate(TurnoBase):
     pass
 
 
-class TurnoResponse(TurnoBase):
+# ✅ agregar esto
+class ClienteSimple(BaseModel):
     id: UUID
+    nombre: str
+
+    class Config:
+        from_attributes = True
+
+
+# ✅ agregar esto
+class TecnicoSimple(BaseModel):
+    id: UUID
+    nombre: str
+
+    class Config:
+        from_attributes = True
+
+
+# ✅ modificar esto
+class TurnoResponse(BaseModel):
+
+    id: UUID
+    numero_ticket: str
+
+    tipo_turno: TipoTurnoEnum
+    estado: EstadoTurnoEnum
+
+    fecha: date
+    hora_inicio: time
+    hora_fin: time
+
+    cliente: ClienteSimple
+    tecnico: TecnicoSimple
 
     class Config:
         from_attributes = True
