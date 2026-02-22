@@ -35,6 +35,7 @@ class TurnoCreate(TurnoBase):
 # ✅ agregar esto
 class ClienteSimple(BaseModel):
     id: UUID
+    numero_cliente: str
     nombre: str
 
     class Config:
