@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr
 from uuid import UUID
 
 class ClienteBase(BaseModel):
-    numero_cliente: int
+    numero_cliente: str
     nombre: str
     apellido: str
     telefono: str

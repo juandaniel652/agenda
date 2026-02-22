@@ -7,7 +7,7 @@ class Cliente(Base):
     __tablename__ = "clientes"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    numero_cliente = Column(Integer, nullable=False)
+    numero_cliente = Column(String, unique=True, nullable=False, index=True)
     nombre = Column(String, nullable=False)
     apellido = Column(String, nullable=False)
     telefono = Column(String, nullable=False)
