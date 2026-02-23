@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from uuid import UUID
 
@@ -6,13 +6,30 @@ from app.db.session import get_db
 from app.schemas.turno import TurnoCreate, TurnoResponse
 from app.services.turno_service import TurnoService
 
+from datetime import date
+from typing import Optional
+from sqlalchemy import select
+
+from app.models.turno import Turno
+from app.schemas.turno import TurnoResponse
+
 router = APIRouter(prefix="/turnos", tags=["Turnos"])
 
 
 @router.get("/", response_model=list[TurnoResponse])
-def obtener_turnos(db: Session = Depends(get_db)):
+def obtener_turnos(
+    fecha: Optional[date] = Query(None),
+    db: Session = Depends(get_db)
+    ):
 
-    return TurnoService.obtener_todos(db)
+    query = select(Turno)
+
+    if fecha:
+        query = query.where(Turno.fecha == fecha)
+
+    turnos = db.execute(query).scalars().all()
+
+    return turnos
 
 
 @router.post("/", response_model=TurnoResponse)
