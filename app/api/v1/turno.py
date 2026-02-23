@@ -22,7 +22,9 @@ def obtener_turnos(
     db: Session = Depends(get_db)
     ):
 
-    query = select(Turno)
+    query = select(Turno).where(
+        Turno.estado != "cancelado"
+    )
 
     if fecha:
         query = query.where(Turno.fecha == fecha)
@@ -42,7 +44,7 @@ def crear_turno(turno: TurnoCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.delete("/{turno_id}")
+@router.patch("/{turno_id}/cancelar")
 def eliminar_turno(turno_id: UUID, db: Session = Depends(get_db)):
 
     try:

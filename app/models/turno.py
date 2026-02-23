@@ -6,6 +6,7 @@ import uuid
 
 from app.db.base import Base
 from app.schemas.turno import TipoTurnoEnum
+from sqlalchemy import DateTime
 
 
 class Turno(Base):
@@ -44,6 +45,17 @@ class Turno(Base):
     created_at = Column(
         TIMESTAMP(timezone=True),
         server_default=text("now()")
+    )
+    
+    cancelado_en = Column(
+        DateTime(timezone=True),
+        nullable=True
+    )
+
+    cancelado_por = Column(
+        UUID(as_uuid=True),
+        ForeignKey("tecnicos.id", ondelete="SET NULL"),
+        nullable=True
     )
 
     # relaciones

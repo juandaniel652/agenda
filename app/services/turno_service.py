@@ -3,6 +3,7 @@ from sqlalchemy import and_
 from sqlalchemy.orm import Session, joinedload
 from app.models.turno import Turno
 from app.schemas.turno import TurnoCreate
+from datetime import datetime, timezone
 
 
 class TurnoService:
@@ -57,12 +58,18 @@ class TurnoService:
 
     @staticmethod
     def eliminar(db: Session, turno_id):
-        turno = db.query(Turno).filter(Turno.id == turno_id).first()
-
+    
+        turno = db.query(Turno).filter(
+            Turno.id == turno_id
+        ).first()
+    
         if not turno:
             raise Exception("Turno no encontrado")
-
-        db.delete(turno)
+    
+        turno.estado = "cancelado"
+        turno.cancelado_en = datetime.now(timezone.utc)
+    
         db.commit()
-
-        return True
+        db.refresh(turno)
+    
+        return turno
