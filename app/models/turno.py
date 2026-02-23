@@ -58,6 +58,8 @@ class Turno(Base):
         nullable=True
     )
 
-    # relaciones
-    cliente = relationship("Cliente")
-    tecnico = relationship("Tecnico")
+    cliente = relationship("Cliente", foreign_keys=[cliente_id])
+
+    tecnico = relationship("Tecnico", foreign_keys=[tecnico_id])
+
+    cancelador = relationship("Tecnico", foreign_keys=[cancelado_por])
