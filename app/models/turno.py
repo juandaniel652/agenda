@@ -5,7 +5,6 @@ from sqlalchemy import String
 import uuid
 
 from app.db.base import Base
-from app.schemas.turno import TipoTurnoEnum
 from sqlalchemy import DateTime
 
 
@@ -28,7 +27,7 @@ class Turno(Base):
         nullable=False
     )
 
-    tipo_turno = Column(Enum(TipoTurnoEnum, name="tipo_turno_enum"), nullable=False)
+    tipo_turno = Column(Integer, nullable=False)
 
     estado = Column(
         Enum("pendiente", "confirmado", "cancelado", "completado", name="estado_turno_enum"),
@@ -41,6 +40,8 @@ class Turno(Base):
     hora_inicio = Column(Time, nullable=False)
 
     hora_fin = Column(Time, nullable=False)
+    
+    rango_horario = Column(String(2), nullable=False)
 
     created_at = Column(
         TIMESTAMP(timezone=True),

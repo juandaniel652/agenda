@@ -4,12 +4,6 @@ from datetime import date, time
 from enum import Enum
 
 
-class TipoTurnoEnum(str, Enum):
-    consulta = "consulta"
-    control = "control"
-    urgencia = "urgencia"
-
-
 class EstadoTurnoEnum(str, Enum):
     pendiente = "pendiente"
     confirmado = "confirmado"
@@ -21,7 +15,8 @@ class TurnoBase(BaseModel):
     numero_ticket: str
     cliente_id: UUID
     tecnico_id: UUID
-    tipo_turno: TipoTurnoEnum
+    tipo_turno: int
+    rango_horario: str
     estado: EstadoTurnoEnum = EstadoTurnoEnum.pendiente
     fecha: date
     hora_inicio: time
@@ -57,7 +52,8 @@ class TurnoResponse(BaseModel):
     id: UUID
     numero_ticket: str
 
-    tipo_turno: TipoTurnoEnum
+    tipo_turno: int
+    rango_horario: str
     estado: EstadoTurnoEnum
 
     fecha: date
