@@ -5,7 +5,7 @@ from enum import Enum
 
 
 class EstadoTurnoEnum(str, Enum):
-    pendiente = "Abierto"
+    Abierto = "Abierto"
     confirmado = "confirmado"
     cancelado = "cancelado"
     completado = "completado"
@@ -17,7 +17,7 @@ class TurnoBase(BaseModel):
     tecnico_id: UUID
     tipo_turno: int
     rango_horario: str
-    estado: EstadoTurnoEnum = EstadoTurnoEnum.pendiente
+    estado: EstadoTurnoEnum = EstadoTurnoEnum.Abierto
     fecha: date
     hora_inicio: time
     hora_fin: time
