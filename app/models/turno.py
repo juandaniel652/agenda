@@ -1,8 +1,9 @@
-from sqlalchemy import Column, Date, Time, Enum, ForeignKey, Integer, TIMESTAMP, text
+from sqlalchemy import Column, Date, Time, ForeignKey, Integer, TIMESTAMP, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy import String
 import uuid
+from sqlalchemy import Enum as SQLEnum
 
 from app.db.base import Base
 from sqlalchemy import DateTime
@@ -29,10 +30,21 @@ class Turno(Base):
 
     tipo_turno = Column(Integer, nullable=False)
 
+    
+
     estado = Column(
-        Enum("pendiente", "confirmado", "cancelado", "completado", name="estado_turno_enum"),
+        SQLEnum(
+            "Abierto",
+            "confirmado",
+            "cancelado",
+            "completado",
+            name="estado_turno_enum",
+            create_type=False,
+            native_enum=True,
+            validate_strings=True
+        ),
         nullable=False,
-        server_default="pendiente"
+        server_default="Abierto"
     )
 
     fecha = Column(Date, nullable=False)
