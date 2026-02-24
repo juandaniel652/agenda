@@ -5,7 +5,7 @@ from enum import Enum
 
 
 class EstadoTurnoEnum(str, Enum):
-    pendiente = "pendiente"
+    pendiente = "Abierto"
     confirmado = "confirmado"
     cancelado = "cancelado"
     completado = "completado"
