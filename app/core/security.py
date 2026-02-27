@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from jose import jwt, JWTError
 from passlib.context import CryptContext
+from fastapi import HTTPException
+from starlette.status import HTTP_401_UNAUTHORIZED
 import os
 
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
@@ -48,4 +50,7 @@ def decode_token(token: str) -> dict:
             algorithms=[ALGORITHM]
         )
     except JWTError:
-        raise RuntimeError("Token inválido o expirado")
+        raise HTTPException(
+            status_code=HTTP_401_UNAUTHORIZED,
+            detail="Token inválido o expirado"
+        )
