@@ -8,7 +8,7 @@ import os
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
-
+                    
 if not JWT_SECRET_KEY:
     raise RuntimeError("JWT_SECRET_KEY no configurada")
 
