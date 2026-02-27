@@ -24,10 +24,7 @@ os.makedirs("uploads", exist_ok=True)
 # =========================
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://loginagenda.netlify.app",
-        "https://s-link-version1-0.netlify.app",
-    ],
+    allow_origin_regex="https://.*\.netlify\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
