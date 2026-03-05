@@ -8,7 +8,6 @@ from app.api.v1.cliente import router as cliente_router
 from app.api.v1.health import router as health_router
 from app.api.v1.tecnico import router as tecnico_router
 from app.api.v1.turno import router as turno_router
-from app.api.v1.disponibilidad import router as disponibilidad_router
 
 
 app = FastAPI(
