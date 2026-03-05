@@ -22,9 +22,14 @@ os.makedirs("uploads", exist_ok=True)
 # =========================
 # CORS
 # =========================
+origins = [
+    "http://localhost:5173",
+    "https://s-link-version1-0.netlify.app"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex="https://.*\.netlify\.app",
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
