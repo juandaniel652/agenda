@@ -1,3 +1,4 @@
+# app/api/v1/tecnico.py
 from fastapi import APIRouter, Depends, UploadFile, File, Form
 from app.api.deps import require_roles
 from app.schemas.tecnico import TecnicoUpdate
@@ -11,6 +12,7 @@ router = APIRouter(
     tags=["Tecnicos"]
 )
 
+
 @router.post("/")
 def crear_tecnico(
     nombre: str = Form(...),
@@ -19,28 +21,34 @@ def crear_tecnico(
     email: str = Form(None),
     duracion_turno_min: int = Form(...),
     imagen: UploadFile = File(None),
+    horarios: str = Form(None),          # ← agregado: JSON string igual que en PUT
     user=Depends(require_roles(["admin"]))
 ):
-
     imagen_url = None
-
     if imagen:
         imagen_url = upload_image(imagen)
 
+    horarios_list = None
+    if horarios:
+        horarios_list = json.loads(horarios)
+
     return TecnicoService.crear_tecnico({
-        "nombre": nombre,
-        "apellido": apellido,
-        "telefono": telefono,
-        "email": email,
+        "nombre":           nombre,
+        "apellido":         apellido,
+        "telefono":         telefono,
+        "email":            email,
         "duracion_turno_min": duracion_turno_min,
-        "imagen_url": imagen_url
+        "imagen_url":       imagen_url,
+        "horarios":         horarios_list   # ← agregado
     })
+
 
 @router.get("/")
 def listar_tecnicos(
     user=Depends(require_roles(["admin"]))
 ):
     return TecnicoService.listar()
+
 
 @router.put("/{id}")
 def actualizar_tecnico(
@@ -51,26 +59,22 @@ def actualizar_tecnico(
     email: Optional[str] = Form(None),
     duracion_turno_min: int = Form(...),
     imagen: UploadFile = File(None),
-    horarios: str = Form(None),  # JSON string
+    horarios: str = Form(None),
     user=Depends(require_roles(["admin"]))
 ):
-
     imagen_url = None
-
     if imagen:
         imagen_url = upload_image(imagen)
 
-
     horarios_list = None
-
     if horarios:
         horarios_list = json.loads(horarios)
 
     data_dict = {
-        "nombre": nombre,
-        "apellido": apellido,
-        "telefono": telefono,
-        "email": email,
+        "nombre":           nombre,
+        "apellido":         apellido,
+        "telefono":         telefono,
+        "email":            email,
         "duracion_turno_min": duracion_turno_min,
     }
 
@@ -83,6 +87,7 @@ def actualizar_tecnico(
     data = TecnicoUpdate(**data_dict)
 
     return TecnicoService.actualizar(id, data)
+
 
 @router.delete("/{id}")
 def eliminar_tecnico(
