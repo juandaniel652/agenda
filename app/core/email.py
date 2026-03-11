@@ -1,17 +1,20 @@
+# app/core/email.py
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from pydantic import EmailStr
 from app.core.config import settings
 
-conf = ConnectionConfig(
-    MAIL_USERNAME=settings.MAIL_USERNAME,
-    MAIL_PASSWORD=settings.MAIL_PASSWORD,
-    MAIL_FROM=settings.MAIL_FROM,
-    MAIL_PORT=587,
-    MAIL_SERVER="smtp.gmail.com",
-    MAIL_STARTTLS=True,
-    MAIL_SSL_TLS=False,
-    USE_CREDENTIALS=True
-)
+def get_mail_config():
+    # Se crea dinámicamente para evitar leer settings al importar módulo
+    return ConnectionConfig(
+        MAIL_USERNAME=settings.MAIL_USERNAME,
+        MAIL_PASSWORD=settings.MAIL_PASSWORD,
+        MAIL_FROM=settings.MAIL_FROM,
+        MAIL_PORT=587,
+        MAIL_SERVER="smtp.gmail.com",
+        MAIL_STARTTLS=True,
+        MAIL_SSL_TLS=False,
+        USE_CREDENTIALS=True
+    )
 
 async def send_reset_email(email: EmailStr, token: str):
 
@@ -31,5 +34,6 @@ async def send_reset_email(email: EmailStr, token: str):
         subtype="html"
     )
 
-    fm = FastMail(conf)
+    # Crear FastMail aquí, usando configuración dinámica
+    fm = FastMail(get_mail_config())
     await fm.send_message(message)
