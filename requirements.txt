@@ -29,3 +29,4 @@ wheel>=0.44.0
 
 python-multipart==0.0.22
 cloudinary
+fastapi-mail==1.4.1
