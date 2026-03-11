@@ -10,14 +10,10 @@ class Settings(BaseSettings):
     MAIL_PASSWORD: str
     MAIL_FROM: str
     FRONTEND_URL: str
-    
-    class Config:
-        env_file = ".env"
-
 
     model_config = SettingsConfigDict(
         env_file=".env",
-        extra="ignore"
+        extra="ignore"  # ignora variables de más en entorno
     )
 
 settings = Settings()
