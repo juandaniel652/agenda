@@ -35,4 +35,6 @@ class User(Base):
         nullable=False
     )
 
+    reset_token = Column(String, nullable=True)
+    reset_token_expire = Column(DateTime, nullable=True)
 
