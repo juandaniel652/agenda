@@ -23,10 +23,12 @@ def obtener_turnos(
     fecha: Optional[date] = Query(None),
     db: Session = Depends(get_db),
 ):
-    query = select(Turno).where(Turno.estado != "Cancelado")
+    query = select(Turno)
     if fecha:
         query = query.where(Turno.fecha == fecha)
-    return db.execute(query).scalars().all()
+
+    turnos = db.execute(query).scalars().all()
+    return [t for t in turnos if t.estado != "Cancelado"]
 
 
 @router.post("/", response_model=TurnoResponse)
