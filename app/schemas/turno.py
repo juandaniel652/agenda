@@ -39,6 +39,7 @@ class ClienteSimple(BaseModel):
 class TecnicoSimple(BaseModel):
     id:     UUID
     nombre: str
+    activo:  bool = True
 
     class Config:
         from_attributes = True

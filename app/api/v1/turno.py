@@ -5,7 +5,7 @@ from uuid import UUID
 from datetime import date
 from typing import Optional
 from pydantic import BaseModel
-
+from app.models.tecnico import Tecnico as TecnicoModel
 from app.db.session import get_db
 from app.schemas.turno import TurnoCreate, TurnoResponse, EstadoTurnoEnum
 from app.services.turno_service import TurnoService
@@ -23,7 +23,11 @@ def obtener_turnos(
     fecha: Optional[date] = Query(None),
     db: Session = Depends(get_db),
 ):
-    query = select(Turno)
+    query = (
+        select(Turno)
+        .join(TecnicoModel, Turno.tecnico_id == TecnicoModel.id)
+        .where(TecnicoModel.activo == True)  # ← excluir técnicos inactivos
+    )
     if fecha:
         query = query.where(Turno.fecha == fecha)
 
