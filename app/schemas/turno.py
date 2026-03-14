@@ -5,63 +5,56 @@ from enum import Enum
 
 
 class EstadoTurnoEnum(str, Enum):
-    Abierto = "Abierto"
-    confirmado = "confirmado"
-    cancelado = "cancelado"
-    completado = "completado"
+    abierto        = "Abierto"
+    cerrado        = "Cerrado"
+    reprogramacion = "Reprogramación"
+    cancelado      = "Cancelado"
 
 
 class TurnoBase(BaseModel):
     numero_ticket: str
-    cliente_id: UUID
-    tecnico_id: UUID
-    tipo_turno: int
+    cliente_id:    UUID
+    tecnico_id:    UUID
+    tipo_turno:    int
     rango_horario: str
-    estado: EstadoTurnoEnum = EstadoTurnoEnum.Abierto
-    fecha: date
-    hora_inicio: time
-    hora_fin: time
+    estado:        EstadoTurnoEnum = EstadoTurnoEnum.abierto
+    fecha:         date
+    hora_inicio:   time
+    hora_fin:      time
 
 
 class TurnoCreate(TurnoBase):
     pass
 
 
-# ✅ agregar esto
 class ClienteSimple(BaseModel):
-    id: UUID
+    id:             UUID
     numero_cliente: str
-    nombre: str
+    nombre:         str
 
     class Config:
         from_attributes = True
 
 
-# ✅ agregar esto
 class TecnicoSimple(BaseModel):
-    id: UUID
+    id:     UUID
     nombre: str
 
     class Config:
         from_attributes = True
 
 
-# ✅ modificar esto
 class TurnoResponse(BaseModel):
-
-    id: UUID
+    id:            UUID
     numero_ticket: str
-
-    tipo_turno: int
+    tipo_turno:    int
     rango_horario: str
-    estado: EstadoTurnoEnum
-
-    fecha: date
-    hora_inicio: time
-    hora_fin: time
-
-    cliente: ClienteSimple
-    tecnico: TecnicoSimple
+    estado:        EstadoTurnoEnum
+    fecha:         date
+    hora_inicio:   time
+    hora_fin:      time
+    cliente:       ClienteSimple
+    tecnico:       TecnicoSimple
 
     class Config:
         from_attributes = True
