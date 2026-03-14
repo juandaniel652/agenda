@@ -30,7 +30,7 @@ class TurnoService:
 
             Turno.fecha == turno_data.fecha,
 
-            Turno.estado != "cancelado",
+            Turno.estado != "Cancelado",
 
             Turno.hora_inicio < turno_data.hora_fin,
 
@@ -66,7 +66,7 @@ class TurnoService:
         if not turno:
             raise Exception("Turno no encontrado")
     
-        turno.estado = "cancelado"
+        turno.estado = "Cancelado"
         turno.cancelado_en = datetime.now(timezone.utc)
     
         db.commit()
