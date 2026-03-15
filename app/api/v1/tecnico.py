@@ -45,7 +45,7 @@ def crear_tecnico(
 
 @router.get("/")
 def listar_tecnicos(
-    user=Depends(require_roles(["admin"]))
+    user=Depends(require_roles(["admin", "user"]))
 ):
     return TecnicoService.listar()
 
