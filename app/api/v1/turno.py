@@ -10,6 +10,7 @@ from app.db.session import get_db
 from app.schemas.turno import TurnoCreate, TurnoResponse, EstadoTurnoEnum
 from app.services.turno_service import TurnoService
 from app.models.turno import Turno
+from app.api.deps import get_db, require_roles
 
 router = APIRouter(prefix="/turnos", tags=["Turnos"])
 
@@ -48,11 +49,12 @@ def actualizar_estado_turno(
     turno_id: UUID,
     body: PatchEstadoSchema,
     db: Session = Depends(get_db),
+    user=Depends(require_roles(["admin"])),  # ← agregar esto
 ):
     turno = db.query(Turno).filter(Turno.id == turno_id).first()
     if not turno:
         raise HTTPException(status_code=404, detail="Turno no encontrado")
-    turno.estado = body.estado.value  # ← .value para que SQLAlchemy reciba el string
+    turno.estado = body.estado.value
     db.commit()
     db.refresh(turno)
     return turno
