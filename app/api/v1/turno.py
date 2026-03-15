@@ -37,7 +37,11 @@ def obtener_turnos(
 
 
 @router.post("/", response_model=TurnoResponse)
-def crear_turno(turno: TurnoCreate, db: Session = Depends(get_db)):
+def crear_turno(
+    turno: TurnoCreate,
+    db: Session = Depends(get_db),
+    user=Depends(require_roles(["admin"])),  # ← agregar esto
+):
     try:
         return TurnoService.crear(db, turno)
     except Exception as e:
