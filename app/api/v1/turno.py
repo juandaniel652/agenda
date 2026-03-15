@@ -64,6 +64,7 @@ def actualizar_estado_turno(
 def cancelar_turno(
     turno_id: UUID,
     db: Session = Depends(get_db),
+    user=Depends(require_roles(["admin"])),  # ← agregar esto
 ):
     try:
         TurnoService.eliminar(db, turno_id)
