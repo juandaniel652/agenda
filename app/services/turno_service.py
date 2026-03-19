@@ -24,36 +24,36 @@ class TurnoService:
     
     @staticmethod
     def obtener_sugerencias(db, tecnico_id, dias=3):
-    
+
         hoy = datetime.now().date()
         resultados = []
-    
+
         tecnico = db.query(TecnicoModel).filter(
             TecnicoModel.id == tecnico_id
         ).first()
-    
+
         if not tecnico:
             return []
-    
+
         for i in range(1, 30):
-        
+
             fecha = hoy + timedelta(days=i)
-    
+
             slots = TurnoService.obtener_disponibilidad(
                 db,
                 tecnico_id,
                 fecha
             )
-    
+
             if slots:
                 resultados.append({
                     "fecha": fecha,
                     "slots": slots
                 })
-    
+
             if len(resultados) == dias:
                 break
-            
+
         return resultados
 
 
@@ -91,12 +91,10 @@ class TurnoService:
         return turno
     
     @staticmethod
-    def obtener_disponibilidad(db, tecnico_id, fecha):
+    def obtener_disponibilidad(db, tecnico_id, fecha, t=1):
 
-        # 1. Día de semana (0=Lunes)
         dia_semana = fecha.weekday()
 
-        # 2. Disponibilidad del técnico
         disponibilidades = db.query(TecnicoDisponibilidad).filter(
             TecnicoDisponibilidad.tecnico_id == tecnico_id,
             TecnicoDisponibilidad.dia_semana == dia_semana
@@ -105,14 +103,9 @@ class TurnoService:
         if not disponibilidades:
             return []
 
-        # 3. Obtener duración del técnico
-        tecnico = db.query(TecnicoModel).filter(
-            TecnicoModel.id == tecnico_id
-        ).first()
-
+        tecnico = db.query(TecnicoModel).filter(TecnicoModel.id == tecnico_id).first()
         duracion = tecnico.duracion_turno_min
 
-        # 4. Turnos ocupados
         turnos_ocupados = db.query(Turno).filter(
             Turno.tecnico_id == tecnico_id,
             Turno.fecha == fecha,
@@ -122,29 +115,28 @@ class TurnoService:
         slots_disponibles = []
 
         for disp in disponibilidades:
-
             inicio = datetime.combine(fecha, disp.hora_inicio)
             fin = datetime.combine(fecha, disp.hora_fin)
 
+            tiempos = []
             while inicio + timedelta(minutes=duracion) <= fin:
-
                 slot_inicio = inicio.time()
                 slot_fin = (inicio + timedelta(minutes=duracion)).time()
-
-                # 5. Verificar solapamiento
                 conflicto = any(
                     t.hora_inicio < slot_fin and t.hora_fin > slot_inicio
                     for t in turnos_ocupados
                 )
-
-                if not conflicto:
-                    slots_disponibles.append(slot_inicio.strftime("%H:%M"))
-
+                tiempos.append(not conflicto)
                 inicio += timedelta(minutes=duracion)
 
+            # Buscar `t` bloques consecutivos libres
+            for i in range(len(tiempos) - t + 1):
+                if all(tiempos[i:i+t]):
+                    # Convertir a HH:MM
+                    hora_slot = (datetime.combine(fecha, disp.hora_inicio) + timedelta(minutes=i*duracion)).time()
+                    slots_disponibles.append(hora_slot.strftime("%H:%M"))
+
         return slots_disponibles
-
-
 
     @staticmethod
     def eliminar(db: Session, turno_id):
