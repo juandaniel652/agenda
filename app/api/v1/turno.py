@@ -11,6 +11,7 @@ from app.schemas.turno import TurnoCreate, TurnoResponse, EstadoTurnoEnum
 from app.services.turno_service import TurnoService
 from app.models.turno import Turno
 from app.api.deps import get_db, require_roles
+from app.models.tecnico_disponibilidad import TecnicoDisponibilidad
 
 router = APIRouter(prefix="/turnos", tags=["Turnos"])
 
@@ -75,3 +76,18 @@ def cancelar_turno(
         return {"message": "Turno cancelado"}
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
+    
+    
+@router.get("/disponibilidad")
+def obtener_disponibilidad(
+    tecnico_id: UUID,
+    fecha: date,
+    db: Session = Depends(get_db)
+):
+    slots = TurnoService.obtener_disponibilidad(db, tecnico_id, fecha)
+
+    return {
+        "fecha": fecha,
+        "tecnico_id": tecnico_id,
+        "slots_disponibles": slots
+    }
