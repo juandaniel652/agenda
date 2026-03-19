@@ -12,6 +12,7 @@ from app.services.turno_service import TurnoService
 from app.models.turno import Turno
 from app.api.deps import get_db, require_roles
 from app.models.tecnico_disponibilidad import TecnicoDisponibilidad
+from fastapi import Query
 
 router = APIRouter(prefix="/turnos", tags=["Turnos"])
 
@@ -90,4 +91,17 @@ def obtener_disponibilidad(
         "fecha": fecha,
         "tecnico_id": tecnico_id,
         "slots_disponibles": slots
+    }
+
+
+@router.get("/sugerencias")
+def obtener_sugerencias(
+    tecnico_id: UUID,
+    db: Session = Depends(get_db)
+):
+    sugerencias = TurnoService.obtener_sugerencias(db, tecnico_id)
+
+    return {
+        "tecnico_id": tecnico_id,
+        "sugerencias": sugerencias
     }

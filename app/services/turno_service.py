@@ -21,6 +21,40 @@ class TurnoService:
         ).all()
     
         return turnos
+    
+    @staticmethod
+    def obtener_sugerencias(db, tecnico_id, dias=3):
+    
+        hoy = datetime.now().date()
+        resultados = []
+    
+        tecnico = db.query(TecnicoModel).filter(
+            TecnicoModel.id == tecnico_id
+        ).first()
+    
+        if not tecnico:
+            return []
+    
+        for i in range(1, 30):
+        
+            fecha = hoy + timedelta(days=i)
+    
+            slots = TurnoService.obtener_disponibilidad(
+                db,
+                tecnico_id,
+                fecha
+            )
+    
+            if slots:
+                resultados.append({
+                    "fecha": fecha,
+                    "slots": slots
+                })
+    
+            if len(resultados) == dias:
+                break
+            
+        return resultados
 
 
     @staticmethod
