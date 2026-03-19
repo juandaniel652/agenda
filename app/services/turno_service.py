@@ -92,33 +92,33 @@ class TurnoService:
     
     @staticmethod
     def obtener_disponibilidad(db, tecnico_id, fecha, t=1):
-
         dia_semana = fecha.weekday()
-
+    
         disponibilidades = db.query(TecnicoDisponibilidad).filter(
             TecnicoDisponibilidad.tecnico_id == tecnico_id,
             TecnicoDisponibilidad.dia_semana == dia_semana
         ).all()
-
+    
         if not disponibilidades:
             return []
-
+    
         tecnico = db.query(TecnicoModel).filter(TecnicoModel.id == tecnico_id).first()
         duracion = tecnico.duracion_turno_min
-
+    
         turnos_ocupados = db.query(Turno).filter(
             Turno.tecnico_id == tecnico_id,
             Turno.fecha == fecha,
             Turno.estado != "Cancelado"
         ).all()
-
+    
         slots_disponibles = []
-
+    
         for disp in disponibilidades:
             inicio = datetime.combine(fecha, disp.hora_inicio)
             fin = datetime.combine(fecha, disp.hora_fin)
-
-            tiempos = []
+    
+            # Crear lista de slots del día
+            slots = []
             while inicio + timedelta(minutes=duracion) <= fin:
                 slot_inicio = inicio.time()
                 slot_fin = (inicio + timedelta(minutes=duracion)).time()
@@ -126,16 +126,16 @@ class TurnoService:
                     t.hora_inicio < slot_fin and t.hora_fin > slot_inicio
                     for t in turnos_ocupados
                 )
-                tiempos.append(not conflicto)
+                slots.append(not conflicto)
                 inicio += timedelta(minutes=duracion)
-
-            # Buscar `t` bloques consecutivos libres
-            for i in range(len(tiempos) - t + 1):
-                if all(tiempos[i:i+t]):
-                    # Convertir a HH:MM
+    
+            # Buscar secuencias consecutivas de t slots
+            for i in range(len(slots) - t + 1):
+                if all(slots[i:i+t]):
+                    # Devolver el inicio del primer slot de la secuencia
                     hora_slot = (datetime.combine(fecha, disp.hora_inicio) + timedelta(minutes=i*duracion)).time()
                     slots_disponibles.append(hora_slot.strftime("%H:%M"))
-
+    
         return slots_disponibles
 
     @staticmethod
