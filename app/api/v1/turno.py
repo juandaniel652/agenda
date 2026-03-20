@@ -92,7 +92,7 @@ def obtener_disponibilidad(
     tecnico_id: UUID,
     fecha: date,
     db: Session = Depends(get_db),
-    user=Depends(require_roles(["admin"]))
+
 ):
     tecnico = db.query(TecnicoModel).filter(TecnicoModel.id == tecnico_id).first()
     if not tecnico:
