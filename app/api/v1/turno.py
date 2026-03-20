@@ -42,10 +42,18 @@ def obtener_turnos(
 def crear_turno(
     turno: TurnoCreate,
     db: Session = Depends(get_db),
-    user=Depends(require_roles(["admin"])),  # ← agregar esto
+    user=Depends(require_roles(["admin"]))
 ):
+    # Verificar que el técnico existe y está activo
+    tecnico = db.query(TecnicoModel).filter(TecnicoModel.id == turno.tecnico_id).first()
+    if not tecnico:
+        raise HTTPException(status_code=404, detail="Técnico no encontrado")
+    if not tecnico.activo:
+        raise HTTPException(status_code=400, detail="El técnico no está activo")
+
     try:
-        return TurnoService.crear(db, turno)
+        nuevo_turno = TurnoService.crear(db, turno)
+        return nuevo_turno
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -83,14 +91,38 @@ def cancelar_turno(
 def obtener_disponibilidad(
     tecnico_id: UUID,
     fecha: date,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user=Depends(require_roles(["admin"]))
 ):
+    tecnico = db.query(TecnicoModel).filter(TecnicoModel.id == tecnico_id).first()
+    if not tecnico:
+        raise HTTPException(status_code=404, detail="Técnico no encontrado")
+    if not tecnico.activo:
+        raise HTTPException(status_code=400, detail="El técnico no está activo")
+
     slots = TurnoService.obtener_disponibilidad(db, tecnico_id, fecha)
 
     return {
+        "tecnico_id": str(tecnico_id),
+        "tecnico_nombre": tecnico.nombre,
         "fecha": fecha,
-        "tecnico_id": tecnico_id,
-        "slots_disponibles": slots
+        "slots_disponibles": slots,
+        "total_slots": len(slots),
+        "siguiente_paso": {
+            "accion": "Elegí un slot y usá el endpoint de creación",
+            "endpoint": "POST /api/v1/turnos/",
+            "body_ejemplo": {
+                "numero_ticket": "TK-00001",
+                "cliente_id": "uuid-del-cliente",
+                "tecnico_id": str(tecnico_id),
+                "tipo_turno": 1,
+                "rango_horario": "M",
+                "fecha": str(fecha),
+                "hora_inicio": slots[0] if slots else "09:00",
+                "hora_fin": "09:15",
+                "estado": "Abierto"
+            }
+        }
     }
 
 
@@ -104,4 +136,49 @@ def obtener_sugerencias(
     return {
         "tecnico_id": tecnico_id,
         "sugerencias": sugerencias
+    }
+
+
+@router.get("/menu")
+def obtener_menu(
+    db: Session = Depends(get_db),
+    user=Depends(require_roles(["admin"]))
+):
+    from datetime import date, timedelta
+
+    # Técnicos activos
+    tecnicos = db.query(TecnicoModel).filter(TecnicoModel.activo == True).all()
+
+    tecnicos_con_slots = []
+    for tecnico in tecnicos:
+        # Próximos 3 días con disponibilidad
+        sugerencias = TurnoService.obtener_sugerencias(db, tecnico.id, dias=3)
+        tecnicos_con_slots.append({
+            "tecnico_id": str(tecnico.id),
+            "tecnico_nombre": tecnico.nombre,
+            "proximas_disponibilidades": sugerencias
+        })
+
+    return {
+        "opciones": [
+            {
+                "id": 1,
+                "accion": "verificar_horario",
+                "descripcion": "Verificar disponibilidad de un técnico en una fecha puntual",
+                "endpoint": "GET /api/v1/turnos/disponibilidad?tecnico_id=...&fecha=YYYY-MM-DD"
+            },
+            {
+                "id": 2,
+                "accion": "ver_sugerencias",
+                "descripcion": "Ver próximas fechas disponibles por técnico",
+                "endpoint": "GET /api/v1/turnos/sugerencias?tecnico_id=..."
+            },
+            {
+                "id": 3,
+                "accion": "crear_turno",
+                "descripcion": "Grabar una visita ya verificada",
+                "endpoint": "POST /api/v1/turnos/"
+            }
+        ],
+        "tecnicos_activos": tecnicos_con_slots
     }
